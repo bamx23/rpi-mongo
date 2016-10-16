@@ -11,14 +11,16 @@ FROM resin/rpi-raspbian:wheezy
 RUN groupadd -r mongodb && useradd -r -g mongodb mongodb
 
 # Installing mongo to /opt/mongo
-RUN sudo apt-get update
-RUN sudo apt-get install -y curl
-RUN sudo apt-get install -y p7zip-full
-RUN curl -O http://facat.github.io/mongodb-2.6.4-arm.7z
-RUN 7z x mongodb-2.6.4-arm.7z
-RUN mv mongodb /opt/mongodb
-RUN rm -f mongodb-2.6.4-arm.7z
-RUN sudo chown -R mongodb /opt/mongodb
+RUN apt-get update \
+    && apt-get install -y curl \
+    && sudo apt-get install -y p7zip-full \
+    && curl -O http://facat.github.io/mongodb-2.6.4-arm.7z \
+    && 7z x mongodb-2.6.4-arm.7z \
+    && mv mongodb /opt/mongodb \
+    && rm -f mongodb-2.6.4-arm.7z \
+    && sudo chown -R mongodb /opt/mongodb \
+    && apt-get purge -y --auto-remove curl p7zip-full \
+    && rm -rf /var/lib/apt/lists/*
 
 # Create the mongo data dirs
 RUN sudo mkdir -p /data/db && \
